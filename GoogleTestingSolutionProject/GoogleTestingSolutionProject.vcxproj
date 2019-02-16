@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{1684DFB6-FA75-4375-9E8F-922EA723C5B7}</ProjectGuid>
+    <ProjectGuid>{F3F4BAAE-B45D-4A67-8B47-BDFF2A7E22EE}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>CryptoProtocols</RootNamespace>
+    <RootNamespace>GoogleTestingSolutionProject</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -149,15 +149,24 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="CryptoProtocols.cpp" />
+    <ClCompile Include="GoogleTestingSolutionProject.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AES256_BlocksCipher\AES256_BlocksCipher.vcxproj">
-      <Project>{8c3cb931-0b3f-4803-9696-99fdd041bbd7}</Project>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\googletest.redist.1.8.3\build\native\googletest.redist.targets" Condition="Exists('..\packages\googletest.redist.1.8.3\build\native\googletest.redist.targets')" />
+    <Import Project="..\packages\googletest.1.8.3\build\native\googletest.targets" Condition="Exists('..\packages\googletest.1.8.3\build\native\googletest.targets')" />
+    <Import Project="..\packages\googletestmock.v.141.1.0.3\build\native\googletestmock.v.141.targets" Condition="Exists('..\packages\googletestmock.v.141.1.0.3\build\native\googletestmock.v.141.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\googletest.redist.1.8.3\build\native\googletest.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\googletest.redist.1.8.3\build\native\googletest.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\googletest.1.8.3\build\native\googletest.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\googletest.1.8.3\build\native\googletest.targets'))" />
+    <Error Condition="!Exists('..\packages\googletestmock.v.141.1.0.3\build\native\googletestmock.v.141.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\googletestmock.v.141.1.0.3\build\native\googletestmock.v.141.targets'))" />
+  </Target>
 </Project>
