@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F3F4BAAE-B45D-4A67-8B47-BDFF2A7E22EE}</ProjectGuid>
+    <ProjectGuid>{09FD47DF-BF0C-40EE-83E6-28362E4623CC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>GoogleTestingSolutionProject</RootNamespace>
+    <RootNamespace>SHA1_Hash</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -142,39 +142,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Test_AES.h" />
-    <ClInclude Include="Test_Rijndael.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="stdafx.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AES256_BlocksCipher\AES256_BlocksCipher.vcxproj">
-      <Project>{8c3cb931-0b3f-4803-9696-99fdd041bbd7}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\SHA1_Hash\SHA1_Hash.vcxproj">
-      <Project>{09fd47df-bf0c-40ee-83e6-28362e4623cc}</Project>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <ClInclude Include="SHA1.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.0\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets" Condition="Exists('..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.0\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" />
-    <Import Project="..\packages\googletestmock.v.140.1.0.1\build\native\googletestmock.v.140.targets" Condition="Exists('..\packages\googletestmock.v.140.1.0.1\build\native\googletestmock.v.140.targets')" />
   </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.0\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.0\build\native\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.targets'))" />
-    <Error Condition="!Exists('..\packages\googletestmock.v.140.1.0.1\build\native\googletestmock.v.140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\googletestmock.v.140.1.0.1\build\native\googletestmock.v.140.targets'))" />
-  </Target>
 </Project>
