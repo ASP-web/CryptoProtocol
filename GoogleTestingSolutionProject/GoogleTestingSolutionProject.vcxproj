@@ -149,15 +149,13 @@
     <ClInclude Include="Test_Rijndael.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Test_SHA1.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AES256_BlocksCipher\AES256_BlocksCipher.vcxproj">
-      <Project>{8c3cb931-0b3f-4803-9696-99fdd041bbd7}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\SHA1_Hash\SHA1_Hash.vcxproj">
       <Project>{09fd47df-bf0c-40ee-83e6-28362e4623cc}</Project>
     </ProjectReference>

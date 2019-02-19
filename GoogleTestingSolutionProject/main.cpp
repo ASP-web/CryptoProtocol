@@ -3,7 +3,8 @@
 
 #include "stdafx.h"
 //#include "Test_Rijndael.h"
-#include "Test_AES.h"
+//#include "Test_AES.h"
+#include "Test_SHA1.h"
 
 using namespace std;
 
