@@ -156,6 +156,9 @@
     <ProjectReference Include="..\AES256_BlocksCipher\AES256_BlocksCipher.vcxproj">
       <Project>{8c3cb931-0b3f-4803-9696-99fdd041bbd7}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\SHA1_Hash\SHA1_Hash.vcxproj">
+      <Project>{09fd47df-bf0c-40ee-83e6-28362e4623cc}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
