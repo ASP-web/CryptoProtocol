@@ -42,7 +42,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -88,6 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -101,6 +102,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,10 +131,14 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>false</ExceptionHandling>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <CallingConvention>Cdecl</CallingConvention>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,19 +151,104 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="targetver.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\aes.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\asn1.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\asn1t.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\asn1_mac.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\async.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\bio.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\blowfish.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\bn.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\buffer.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\camellia.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\cast.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\cmac.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\cms.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\comp.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\conf.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\conf_api.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\crypto.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ct.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\des.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\dh.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\dsa.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\dtls1.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ebcdic.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ec.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ecdh.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ecdsa.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\engine.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\err.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\evp.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\e_os2.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\hmac.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\idea.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\kdf.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\lhash.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\md2.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\md4.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\md5.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\mdc2.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\modes.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\objects.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\obj_mac.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ocsp.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\opensslconf.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\opensslv.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ossl_typ.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\pem.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\pem2.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\pkcs12.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\pkcs7.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\rand.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\rc2.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\rc4.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\rc5.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ripemd.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\rsa.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\safestack.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\seed.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\sha.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\srp.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\srtp.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ssl.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ssl2.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ssl3.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\stack.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\symhacks.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\tls1.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ts.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\txt_db.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\ui.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\whrlpool.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\x509.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\x509v3.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\x509_vfy.h" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\__DECC_INCLUDE_EPILOGUE.H" />
+    <ClInclude Include="openssl-1.1.0f-vs2015\include64\openssl\__DECC_INCLUDE_PROLOGUE.H" />
+    <ClInclude Include="Protocol.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CryptoProtocols.cpp" />
+    <ClCompile Include="openssl-1.1.0f-vs2015\include64\openssl\applink.c" />
+    <ClCompile Include="Protocol.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AES256_BlocksCipher\AES256_BlocksCipher.vcxproj">
-      <Project>{8c3cb931-0b3f-4803-9696-99fdd041bbd7}</Project>
+    <Library Include="openssl-1.1.0f-vs2015\lib64\libcryptoMD.lib" />
+    <Library Include="openssl-1.1.0f-vs2015\lib64\libcryptoMDd.lib" />
+    <Library Include="openssl-1.1.0f-vs2015\lib64\libsslMD.lib" />
+    <Library Include="openssl-1.1.0f-vs2015\lib64\libsslMDd.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CSPRNG\CSPRNG.vcxproj">
+      <Project>{1888e01b-bf98-4739-b66c-65b5109d91b8}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\SHA1_Hash\SHA1_Hash.vcxproj">
-      <Project>{09fd47df-bf0c-40ee-83e6-28362e4623cc}</Project>
+    <ProjectReference Include="..\ECDSA\ECDSA.vcxproj">
+      <Project>{f9165079-ae8a-4e97-afe9-476e26e11556}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\SHA512_Hash\SHA512_Hash.vcxproj">
+      <Project>{3b8e65d4-5466-42a3-91f9-668bf07aead4}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

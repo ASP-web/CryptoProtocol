@@ -27,12 +27,18 @@
     <ClInclude Include="AES.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EncryptionMode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Rijndael.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AES.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EncryptionMode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

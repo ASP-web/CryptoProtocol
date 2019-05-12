@@ -20,7 +20,7 @@ CATEGORY: COMPUTER SECURITY SUBCATEGORY: CRYPTOGRAPHY
 using namespace std;
 
 class SHA1 {
-public:
+private:
 	const uint32_t K0{ 0x5a827999 };
 	const uint32_t K1{ 0x6ed9eba1 };
 	const uint32_t K2{ 0x8f1bbcdc };

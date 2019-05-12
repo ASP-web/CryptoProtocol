@@ -11,20 +11,20 @@ void SHA1::PaddingTheMessage() {
 	};
 	Transformation transformationNumbers;
 
-	uint8_t byLastBlockSize = (byarrMessage->size()) % 64;
-	uint8_t byPaddingSize = 64 - byLastBlockSize;
+	uint64_t qwInputMessageSize = byarrMessage->size();
 
 	byarrMessage->push_back(0x80);
 
-	uint8_t wSizeOfZeroPaddingBytes = (448 - (8 * byLastBlockSize + 8)) / 8;
-	for (uint8_t i = 0; i < wSizeOfZeroPaddingBytes; i++) { byarrMessage->push_back(0x00); }
+	/*Add Bytes 0x00 in Massage to resolve equation : [InputMessageSize + 1 + NumberOfBytes0x00 = 56(mod 64)] <=> [l + 1 + k = 448(mod 512)]*/
+	while(byarrMessage->size() % 64 != 56){ byarrMessage->push_back(0x00); }
 
-	transformationNumbers.qwNumber = 8 * byLastBlockSize;
+	/*Add Block 64 bit Number of Bits InputMessageSize*/
+	transformationNumbers.qwNumber = 8 * qwInputMessageSize;
 	for (int i = 7; i > -1; i--) { byarrMessage->push_back(transformationNumbers.BytesOfNumber[i]); }
 };
 
 void SHA1::Preprocessing() {
-	if (byarrMessage->size() % 64 != 0) PaddingTheMessage();
+	 PaddingTheMessage();
 };
 
 void SHA1::HashCompulation() {
@@ -41,10 +41,12 @@ void SHA1::HashCompulation() {
 	};
 	FormatedMessageToAlgorithm formatMessage;
 
-	for (uint64_t i = 0; i < byarrMessage->size(); ) {
+	for (register uint64_t i = 0; i < byarrMessage->size(); ) {
 		while (M->size() != 16) {
 			for (int j = 3; j > -1; j--) {
+				#pragma warning (disable: 4244)
 				formatMessage.ByteArrayOfM[j] = (*byarrMessage)[i];
+				#pragma warning (default: 4244)
 				i++;
 			}
 			M->push_back(formatMessage.M);
@@ -101,7 +103,7 @@ void SHA1::HashComplulationBlock() {
 	W->clear();
 };
 
-uint32_t SHA1::ROTL(uint32_t x, uint8_t n) { return ((x << n) | (x >> (32 - n))); };
+uint32_t SHA1::ROTL(uint32_t x, uint8_t n) { return ((x << n) | (x >> 32 - n)); };
 
 vector<uint8_t>* SHA1::GetHash(vector<uint8_t>* ptrMessage) {
 

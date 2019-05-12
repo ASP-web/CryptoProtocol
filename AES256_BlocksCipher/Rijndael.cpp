@@ -5,13 +5,13 @@
 
 using namespace std;
 
-void Rijndael::SubBytes(){
+void Rijndael::SubBytes(vector<vector<uint8_t>>* State){
 	for (uint8_t i = 0; i < 4; i++) {
 		for (uint8_t j = 0; j < 4; j++) { (*State)[j][i] = Sbox[(*State)[j][i]]; }
 	}
 };
 
-void Rijndael::ShiftRows(){
+void Rijndael::ShiftRows(vector<vector<uint8_t>>* State){
 	//Shift 1 row
 	swap((*State)[0][1], (*State)[3][1]);
 	swap((*State)[0][1], (*State)[1][1]);
@@ -25,7 +25,7 @@ void Rijndael::ShiftRows(){
 	swap((*State)[2][3], (*State)[3][3]);
 };
 
-void Rijndael::MixColomns(){
+void Rijndael::MixColomns(vector<vector<uint8_t>>* State){
 	vector<vector<uint8_t>> TempState(*State);
 	//MixColoms 0,1,2,3; Callc Cells in Colomn[i]
 	for (uint8_t i = 0; i < 4; i++) {
@@ -37,7 +37,7 @@ void Rijndael::MixColomns(){
 	TempState.clear();
 };
 
-void Rijndael::AddRoundKey(uint8_t byCurrentRound){
+void Rijndael::AddRoundKey(uint8_t byCurrentRound, vector<vector<uint8_t>>* State){
 	for (uint8_t i = 0; i < 4; i++) {
 		for (uint8_t j = 0; j < 4; j++) { (*State)[i][j] ^= (*RoundKeys)[byCurrentRound * Nb * Nb + i * Nb + j]; }
 	}
@@ -88,13 +88,7 @@ void Rijndael::KeyExpansion(){
 	}
 };
 
-void Rijndael::AdditionBlocksRatio(vector<uint8_t>* arrbyBufferPublicText){
-	//Work by GOST 34.12-2015
-	arrbyBufferPublicText->push_back(0x80);
-	for (uint8_t i = 0; i < (arrbyBufferPublicText->size() % 16); i++) { arrbyBufferPublicText->push_back(0x00); }
-};
-
-void Rijndael::InvShiftRows(){
+void Rijndael::InvShiftRows(vector<vector<uint8_t>>* State){
 	//Shift 1 row
 	swap((*State)[0][1], (*State)[3][1]);
 	swap((*State)[3][1], (*State)[1][1]);
@@ -108,13 +102,13 @@ void Rijndael::InvShiftRows(){
 	swap((*State)[2][3], (*State)[1][3]);
 };
 
-void Rijndael::InvSubBytes(){
+void Rijndael::InvSubBytes(vector<vector<uint8_t>>* State){
 	for (uint8_t i = 0; i < 4; i++) {
 		for (uint8_t j = 0; j < 4; j++) { (*State)[j][i] = InvSbox[(*State)[j][i]]; }
 	}
 };
 
-void Rijndael::InvMixColomns(){
+void Rijndael::InvMixColomns(vector<vector<uint8_t>>* State){
 	vector<vector<uint8_t>> TempState(*State);
 	//InvMixColoms 0,1,2,3; Callc Cells in Colomn[i]
 	for (uint8_t i = 0; i < 4; i++) {
@@ -126,86 +120,96 @@ void Rijndael::InvMixColomns(){
 	TempState.clear();
 };
 
-vector<uint8_t>* Rijndael::Encrypt(vector<uint8_t>* arrbyBufferPlainText, vector<uint8_t>* byarrKey){
-	Key = byarrKey;
+vector<uint8_t> Rijndael::Encrypt(vector<uint8_t>& arrbyBlockPlainText, vector<uint8_t>* byarrKey){
+	//Create matrix State with size 4*Nb and Value in Cells is 0
+	auto State = new vector<vector<uint8_t>>(Nb, vector<uint8_t>(Nb, 0));
+
 	//Expansion Work Key
-	KeyExpansion();
-	//Check AdditionBlockRatio
-	if (arrbyBufferPlainText->size() % 16 != 0) { AdditionBlocksRatio(arrbyBufferPlainText); }
-	
-	vector<uint8_t>* arrbyBufferCipherText = new vector<uint8_t>;
-	for (uint32_t dwCurrentBlock = 0; dwCurrentBlock < (arrbyBufferPlainText->size() / 16); dwCurrentBlock++) {
-		//Add OT Block in State
-		for (uint8_t i = 0; i < 4; i++) {
-			for (uint8_t j = 0; j < 4; j++) {
-				(*State)[i][j] = (*arrbyBufferPlainText)[dwCurrentBlock * Nb * Nb + i * Nb + j];
-			}
-		}		
-		//Round {0}
-		AddRoundKey(0);
-		//Rounds {1, 2, 3, ..., 9} or {1, 2, 3, ..., 11} or {1, 2, 3, ..., 13}
-		for (uint8_t byCurrentRound = 1; byCurrentRound < Nr; byCurrentRound++) {
-			SubBytes();
-			ShiftRows();
-			MixColomns();
-			AddRoundKey(byCurrentRound);
-		}
-		//Last Round {10} or {12} or {14}
-		SubBytes();
-		ShiftRows();
-		AddRoundKey(Nr);
-		//Write CipherTextBlock in arrbyBufferCipherText
-		for (uint8_t i = 0; i < 4; i++) {
-			for (uint8_t j = 0; j < 4; j++) { arrbyBufferCipherText->push_back((*State)[i][j]); }
-		}
+	if (Key != byarrKey) { 
+		Key = byarrKey;
+		KeyExpansion(); 
 	}
-	return arrbyBufferCipherText;
+
+	//Create Buffer Block Cipher Text
+	vector<uint8_t> arrbyBlockCipherText;
+
+	//Add OT Block in State
+	for (uint8_t i = 0; i < 4; i++) {
+		for (uint8_t j = 0; j < 4; j++) {
+			(*State)[i][j] = arrbyBlockPlainText[i * Nb + j];
+		}
+	}		
+	//Round {0}
+	AddRoundKey(0, State);
+	//Rounds {1, 2, 3, ..., 9} or {1, 2, 3, ..., 11} or {1, 2, 3, ..., 13}
+	for (uint8_t byCurrentRound = 1; byCurrentRound < Nr; byCurrentRound++) {
+		SubBytes(State);
+		ShiftRows(State);
+		MixColomns(State);
+		AddRoundKey(byCurrentRound, State);
+	}
+	//Last Round {10} or {12} or {14}
+	SubBytes(State);
+	ShiftRows(State);
+	AddRoundKey(Nr, State);
+	//Write CipherTextBlock in arrbyBufferCipherText
+	for (uint8_t i = 0; i < 4; i++) {
+		for (uint8_t j = 0; j < 4; j++) { arrbyBlockCipherText.push_back((*State)[i][j]); }
+	}
+
+	delete State;
+	return arrbyBlockCipherText;
 };
 
-vector<uint8_t>* Rijndael::Decrypt(vector<uint8_t>* arrbyBufferCipherText, vector<uint8_t>* byarrKey){
-	Key = byarrKey;
-	//Expansion Work Key
-	KeyExpansion();
+vector<uint8_t> Rijndael::Decrypt(vector<uint8_t>& arrbyBlockCipherText, vector<uint8_t>* byarrKey){
+	//Create matrix State with size 4*Nb and Value in Cells is 0
+	auto State = new vector<vector<uint8_t>>(Nb, vector<uint8_t>(Nb, 0));
 
-	vector<uint8_t>* arrbyBufferPlainText = new vector<uint8_t>;
-	for (uint32_t dwCurrentBlock = 0; dwCurrentBlock < (arrbyBufferCipherText->size() / 16); dwCurrentBlock++) {
-		//Add OT Block in State
-		for (uint8_t i = 0; i < 4; i++) {
-			for (uint8_t j = 0; j < 4; j++) {
-				(*State)[i][j] = (*arrbyBufferCipherText)[dwCurrentBlock * Nb * Nb + i * Nb + j];
-			}
-		}
-		//Round {0}
-		AddRoundKey(Nr);
-		//Rounds {1, 2, 3, ..., 9} or {1, 2, 3, ..., 11} or {1, 2, 3, ..., 13}
-		for (uint8_t byCurrentRound = Nr - 1; byCurrentRound > 0; byCurrentRound--) {
-			InvShiftRows();
-			InvSubBytes();
-			AddRoundKey(byCurrentRound);
-			InvMixColomns();
-		}
-		//Last Round {10} or {12} or {14}
-		InvSubBytes();
-		InvShiftRows();
-		AddRoundKey(0);
-		//Write CipherTextBlock in arrbyBufferCipherText
-		for (uint8_t i = 0; i < 4; i++) {
-			for (uint8_t j = 0; j < 4; j++) { arrbyBufferPlainText->push_back((*State)[i][j]); }
+	//Expansion Work Key
+	if (Key != byarrKey) {
+		Key = byarrKey;
+		KeyExpansion();
+	}
+
+	//Create Buffer Block Plain Text
+	vector<uint8_t> arrBlockPlainText;
+
+	//Add OT Block in State
+	for (uint8_t i = 0; i < 4; i++) {
+		for (uint8_t j = 0; j < 4; j++) {
+			(*State)[i][j] = arrbyBlockCipherText[i * Nb + j];
 		}
 	}
-	return arrbyBufferPlainText;
+	//Round {0}
+	AddRoundKey(Nr, State);
+	//Rounds {1, 2, 3, ..., 9} or {1, 2, 3, ..., 11} or {1, 2, 3, ..., 13}
+	for (uint8_t byCurrentRound = Nr - 1; byCurrentRound > 0; byCurrentRound--) {
+		InvShiftRows(State);
+		InvSubBytes(State);
+		AddRoundKey(byCurrentRound, State);
+		InvMixColomns(State);
+	}
+	//Last Round {10} or {12} or {14}
+	InvSubBytes(State);
+	InvShiftRows(State);
+	AddRoundKey(0, State);
+	//Write CipherTextBlock in arrbyBufferCipherText
+	for (uint8_t i = 0; i < 4; i++) {
+		for (uint8_t j = 0; j < 4; j++) { arrBlockPlainText.push_back((*State)[i][j]); }
+	}
+	
+	delete State;
+	return arrBlockPlainText;
 };
 
 Rijndael::Rijndael(uint8_t valueNb, uint8_t valueNk, uint8_t valueNr) {
 	Nb = valueNb;
 	Nk = valueNk;
 	Nr = valueNr;
-	State = new vector<vector<uint8_t>>(Nb, vector<uint8_t>(Nb,0));		//create matrix State with size 4*Nb and Value in Cells is 0
 	RoundKeys = new vector<uint8_t>((Nb*(Nr + 1)*Nb), 0);				//create buffer of RoundKeys size Nb*(Nr+1)*Nb and Value in Cells is 0
 };
 
 Rijndael::~Rijndael() {
-	delete State;
 	memset(RoundKeys->data(), 0x00, RoundKeys->size());					//Security Clear buffer RoundKeys
 	delete RoundKeys;
 };

@@ -1,5 +1,5 @@
-#ifndef TEST_RIJNDAEL
-#define TEST_RIJNDAEL
+#ifndef TEST_RIJNDAEL_H
+#define TEST_RIJNDAEL_H
 
 #include "../AES256_BlocksCipher/Rijndael.h"
 #include "gtest/gtest.h"
@@ -499,4 +499,4 @@ TEST_F(RijndaelMockTest, CorrectCallFunctionDecrypt) {
 	rmockInstance->Decrypt(nullptr);
 }
 
-#endif //TEST_RIJNDAEL
+#endif //TEST_RIJNDAEL_H

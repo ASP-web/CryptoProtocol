@@ -1,98 +1,269 @@
-#ifndef TEST_AES
-#define TEST_AES
+#ifndef TEST_AES_H
+#define TEST_AES_H
 
 #include "../AES256_BlocksCipher/AES.h"
+#include "../AES256_BlocksCipher/Rijndael.h"
 #include "gtest/gtest.h"
+#include <chrono>
 
 using namespace std;
 
 /*Unit Test AES 128/192/256 BlocksCipher*/
 
-class TestAES : public ::testing::Test {
-};
+class TestAES : public ::testing::Test {};
 
-TEST_F(TestAES, CorrectWorkEncryptAES128) {
+/*Big Input Size TESTS*/
+//ECB
+TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES128_ECB) {
+	using myclock = chrono::steady_clock;
+	myclock::time_point start;
+	myclock::time_point end;
+
 	AES_128 aes;
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
-	vector<uint8_t>* PT = new vector<uint8_t>{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
-	vector<uint8_t>* CT= new vector<uint8_t>{ 0x69, 0xc4, 0xe0, 0xd8, 0x6a, 0x7b, 0x04, 0x30, 0xd8, 0xcd, 0xb7, 0x80, 0x70, 0xb4, 0xc5, 0x5a };
+	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+
+	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
-	for (uint8_t i = 0; i < 16; i++) { EXPECT_EQ((*calcCT)[i], (*CT)[i]); }
-	
+	end = myclock::now();
+	cout << "Encrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES128_ECB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	start = myclock::now();
+	vector<uint8_t>* calcPT = aes.Decrypt(calcCT, key);
+	end = myclock::now();
+	cout << "Decrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES128_ECB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	for (uint64_t i = 0; i < PT->size(); i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
+
 	delete key;
 	delete PT;
-	delete CT;
 	delete calcCT;
-}
-
-TEST_F(TestAES, CorrectWorkDecryptAES128) {
-	AES_128 aes;
-	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
-	vector<uint8_t>* PT = new vector<uint8_t>{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
-	vector<uint8_t>* CT = new vector<uint8_t>{ 0x69, 0xc4, 0xe0, 0xd8, 0x6a, 0x7b, 0x04, 0x30, 0xd8, 0xcd, 0xb7, 0x80, 0x70, 0xb4, 0xc5, 0x5a };
-	vector<uint8_t>* calcPT = aes.Decrypt(CT, key);
-	for (uint8_t i = 0; i < 16; i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
-
-	delete key;
-	delete PT;
-	delete CT;
 	delete calcPT;
 }
 
-TEST_F(TestAES, CorrectWorkEncryptAES192) {
+TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES192_ECB) {
+	using myclock = chrono::steady_clock;
+	myclock::time_point start;
+	myclock::time_point end;
+
 	AES_192 aes;
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
-	vector<uint8_t>* PT = new vector<uint8_t>{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
-	vector<uint8_t>* CT = new vector<uint8_t>{ 0xdd, 0xa9, 0x7c, 0xa4, 0x86, 0x4c, 0xdf, 0xe0, 0x6e, 0xaf, 0x70, 0xa0, 0xec, 0x0d, 0x71, 0x91 };
+	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+
+	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
-	for (uint8_t i = 0; i < 16; i++) { EXPECT_EQ((*calcCT)[i], (*CT)[i]); }
+	end = myclock::now();
+	cout << "Encrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES192_ECB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	start = myclock::now();
+	vector<uint8_t>* calcPT = aes.Decrypt(calcCT, key);
+	end = myclock::now();
+	cout << "Decrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES192_ECB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	for (uint64_t i = 0; i < PT->size(); i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
 
 	delete key;
 	delete PT;
-	delete CT;
 	delete calcCT;
-}
-
-TEST_F(TestAES, CorrectWorkDecryptAES192) {
-	AES_192 aes;
-	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
-	vector<uint8_t>* PT = new vector<uint8_t>{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
-	vector<uint8_t>* CT = new vector<uint8_t>{ 0xdd, 0xa9, 0x7c, 0xa4, 0x86, 0x4c, 0xdf, 0xe0, 0x6e, 0xaf, 0x70, 0xa0, 0xec, 0x0d, 0x71, 0x91 };
-	vector<uint8_t>* calcPT = aes.Decrypt(CT, key);
-	for (uint8_t i = 0; i < 16; i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
-
-	delete key;
-	delete PT;
-	delete CT;
 	delete calcPT;
 }
 
-TEST_F(TestAES, CorrectWorkEncryptAES256) {
+TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES256_ECB) {
+	using myclock = chrono::steady_clock;
+	myclock::time_point start;
+	myclock::time_point end;
+
 	AES_256 aes;
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f };
-	vector<uint8_t>* PT = new vector<uint8_t>{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
-	vector<uint8_t>* CT = new vector<uint8_t>{ 0x8e, 0xa2, 0xb7, 0xca, 0x51, 0x67, 0x45, 0xbf, 0xea, 0xfc, 0x49, 0x90, 0x4b, 0x49, 0x60, 0x89 };
+	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+
+	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
-	for (uint8_t i = 0; i < 16; i++) { EXPECT_EQ((*calcCT)[i], (*CT)[i]); }
+	end = myclock::now();
+	cout << "Encrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES256_ECB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	start = myclock::now();
+	vector<uint8_t>* calcPT = aes.Decrypt(calcCT, key);
+	end = myclock::now();
+	cout << "Decrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES256_ECB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	for (uint64_t i = 0; i < PT->size(); i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
 
 	delete key;
 	delete PT;
-	delete CT;
 	delete calcCT;
+	delete calcPT;
 }
 
-TEST_F(TestAES, CorrectWorkDecryptAES256) {
-	AES_256 aes;
-	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f };
-	vector<uint8_t>* PT = new vector<uint8_t>{ 0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff };
-	vector<uint8_t>* CT = new vector<uint8_t>{ 0x8e, 0xa2, 0xb7, 0xca, 0x51, 0x67, 0x45, 0xbf, 0xea, 0xfc, 0x49, 0x90, 0x4b, 0x49, 0x60, 0x89 };
-	vector<uint8_t>* calcPT = aes.Decrypt(CT, key);
-	for (uint8_t i = 0; i < 16; i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
+//CTR
+TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES128_CTR) {
+	using myclock = chrono::steady_clock;
+	myclock::time_point start;
+	myclock::time_point end;
+
+	AES_128 aes;
+	aes.SetEncryptionMode(1);
+	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+
+	start = myclock::now();
+	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
+	end = myclock::now();
+	cout << "Encrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES128_CTR time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	start = myclock::now();
+	vector<uint8_t>* calcPT = aes.Decrypt(calcCT, key);
+	end = myclock::now();
+	cout << "Decrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES128_CTR time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	for (uint64_t i = 0; i < PT->size(); i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
 
 	delete key;
 	delete PT;
-	delete CT;
-	delete calcPT; 
+	delete calcCT;
+	delete calcPT;
 }
 
-#endif //TEST_AES
+TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES192_CTR) {
+	using myclock = chrono::steady_clock;
+	myclock::time_point start;
+	myclock::time_point end;
+
+	AES_192 aes;
+	aes.SetEncryptionMode(1);
+	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
+	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+
+	start = myclock::now();
+	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
+	end = myclock::now();
+	cout << "Encrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES192_CTR time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	start = myclock::now();
+	vector<uint8_t>* calcPT = aes.Decrypt(calcCT, key);
+	end = myclock::now();
+	cout << "Decrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES192_CTR time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	for (uint64_t i = 0; i < PT->size(); i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
+
+	delete key;
+	delete PT;
+	delete calcCT;
+	delete calcPT;
+}
+
+TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES256_CTR) {
+	using myclock = chrono::steady_clock;
+	myclock::time_point start;
+	myclock::time_point end;
+
+	AES_256 aes;
+	aes.SetEncryptionMode(1);
+	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f };
+	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+
+	start = myclock::now();
+	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
+	end = myclock::now();
+	cout << "Encrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES256_CTR time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	start = myclock::now();
+	vector<uint8_t>* calcPT = aes.Decrypt(calcCT, key);
+	end = myclock::now();
+	cout << "Decrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES256_CTR time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	for (uint64_t i = 0; i < PT->size(); i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
+
+	delete key;
+	delete PT;
+	delete calcCT;
+	delete calcPT;
+}
+
+//OFB
+TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES128_OFB) {
+	using myclock = chrono::steady_clock;
+	myclock::time_point start;
+	myclock::time_point end;
+
+	AES_128 aes;
+	aes.SetEncryptionMode(2);
+	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
+	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+
+	start = myclock::now();
+	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
+	end = myclock::now();
+	cout << "Encrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES128_OFB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	start = myclock::now();
+	vector<uint8_t>* calcPT = aes.Decrypt(calcCT, key);
+	end = myclock::now();
+	cout << "Decrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES128_OFB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	for (uint64_t i = 0; i < PT->size(); i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
+
+	delete key;
+	delete PT;
+	delete calcCT;
+	delete calcPT;
+}
+
+TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES192_OFB) {
+	using myclock = chrono::steady_clock;
+	myclock::time_point start;
+	myclock::time_point end;
+
+	AES_192 aes;
+	aes.SetEncryptionMode(2);
+	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
+	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+
+	start = myclock::now();
+	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
+	end = myclock::now();
+	cout << "Encrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES192_OFB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	start = myclock::now();
+	vector<uint8_t>* calcPT = aes.Decrypt(calcCT, key);
+	end = myclock::now();
+	cout << "Decrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES192_OFB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	for (uint64_t i = 0; i < PT->size(); i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
+
+	delete key;
+	delete PT;
+	delete calcCT;
+	delete calcPT;
+}
+
+TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES256_OFB) {
+	using myclock = chrono::steady_clock;
+	myclock::time_point start;
+	myclock::time_point end;
+
+	AES_256 aes;
+	aes.SetEncryptionMode(2);
+	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f };
+	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+
+	start = myclock::now();
+	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
+	end = myclock::now();
+	cout << "Encrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES256_OFB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	start = myclock::now();
+	vector<uint8_t>* calcPT = aes.Decrypt(calcCT, key);
+	end = myclock::now();
+	cout << "Decrypt_" << PT->size() / (1024 * 1024) << "Mbyte_AES256_OFB time: " << chrono::duration_cast<chrono::microseconds>(end - start).count() << " microseconds" << endl;
+
+	for (uint64_t i = 0; i < PT->size(); i++) { EXPECT_EQ((*calcPT)[i], (*PT)[i]); }
+
+	delete key;
+	delete PT;
+	delete calcCT;
+	delete calcPT;
+}
+
+
+#endif //TEST_AES_H
