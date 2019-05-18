@@ -66,6 +66,23 @@ void ProtocolThirdStep(IUser& User1, IUser& User2) {
 	if (!User2.checkCorrectSessionKey()) { cout << false << endl; ProtocolThirdStep(User2, User1); }
 }
 
+void ProtocolFourthStep(IUser& Sender, IUser& Receiver) {
+	//Sender Create Message for Receiver
+	Sender.CreateMessage();
+
+	//Sender Send Message to Receiver
+	Sender.SendMessage(Receiver);
+
+	//Receiver Check Massage Digital Sign and then Create Answer 
+	Receiver.CheckMessage_CreateAnswer();
+
+	//Receiver send Answer to Sender
+	Receiver.SendAnswer(Sender);
+
+	//Sender Check Answer if true - send is ok, if false - send is fail - repeat FourthStep
+	if (!Sender.CheckAnswer()) { cout << false << endl; ProtocolFourthStep(Sender, Receiver); }
+}
+
 int main()
 {
 	using myclock = chrono::steady_clock;
@@ -104,6 +121,12 @@ int main()
 	ProtocolThirdStep(Alice, Bob);
 	end = myclock::now();
 	cout << "Time Third Step Protocol: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << " milliseconds" << endl;
+	
+	ProtocolFourthStep(Alice, Bob);
+	start = myclock::now();
+	ProtocolFourthStep(Bob, Alice);
+	end = myclock::now();
+	cout << "Time Fourth Step Protocol: " << chrono::duration_cast<chrono::milliseconds>(end - start).count() << " milliseconds" << endl;
 
     return 0;
 }

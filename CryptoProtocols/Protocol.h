@@ -49,6 +49,23 @@ public:
 	string strECDHE_UserCheckCorrectSessionKey;
 	string strECDHE_FriendCheckCorrectSessionKey;
 
+	string strUser_MessagePath;
+	string strUser_EncryptionMessagePath;
+	string strUser_Parametr_R_DigitalSignMessagePath;
+	string strUser_Parametr_S_DigitalSignMessagePath;
+	string strUser_X_KeyCheckDigitalSignMessagePath;
+	string strUser_Y_KeyCheckDigitalSignMessagePath;
+	string strUser_AnswerPath;
+
+	string strFriend_EncryptionMessagePath;
+	string strFriend_DecryptionMessagePath;
+	string strFriend_Parametr_R_DigitalSignMessagePath;
+	string strFriend_Parametr_S_DigitalSignMessagePath;
+	string strFriend_X_KeyCheckDigitalSignMessagePath;
+	string strFriend_Y_KeyCheckDigitalSignMessagePath;
+	string strFriend_AnswerPath;
+
+
 	void GenerateKeyPair();
 
 	bool checkSignHashPublicKey(string& Path_SignHashUserPublicKey, string& Path_UserPublicKey);
@@ -66,6 +83,16 @@ public:
 	void Send_CheckCorrectSessionKey(IUser& toUser);
 
 	bool checkCorrectSessionKey();
+
+	void CreateMessage();
+
+	void SendMessage(IUser& toUser);
+
+	void CheckMessage_CreateAnswer();
+
+	void SendAnswer(IUser& toUser);
+
+	bool CheckAnswer();
 
 	string hexStr(vector<uint8_t> *data);
 
@@ -87,7 +114,23 @@ public:
 
 		string& _strECDHE_UserSessionKey,
 		string& _strECDHE_UserCheckCorrectSessionKey,
-		string& _strECDHE_FriendCheckCorrectSessionKey
+		string& _strECDHE_FriendCheckCorrectSessionKey,
+
+		string& _strUser_MessagePath,
+		string& _strUser_EncryptionMessagePath,
+		string& _strUser_Parametr_R_DigitalSignMessagePath,
+		string& _strUser_Parametr_S_DigitalSignMessagePath,
+		string& _strUser_X_KeyCheckDigitalSignMessagePath,
+		string& _strUser_Y_KeyCheckDigitalSignMessagePath,
+		string& _strUser_AnswerPath,
+
+		string& _strFriend_EncryptionMessagePath,
+		string& _strFriend_DecryptionMessagePath,
+		string& _strFriend_Parametr_R_DigitalSignMessagePath,
+		string& _strFriend_Parametr_S_DigitalSignMessagePath,
+		string& _strFriend_X_KeyCheckDigitalSignMessagePath,
+		string& _strFriend_Y_KeyCheckDigitalSignMessagePath,
+		string& _strFriend_AnswerPath
 	);
 	~IUser();
 };

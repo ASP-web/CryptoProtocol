@@ -22,7 +22,23 @@ User_Alice::User_Alice() : IUser(
 
 	string("protocol/ALICE/ECDHE/SESSION KEY/SECRET.KEY"),
 	string("protocol/ALICE/ECDHE/CHECKER CORRECT/CHECK.SIG"),
-	string("protocol/ALICE/FROM/BOB/ECDHE/CHECKER CORRECT/CHECK.SIG")
+	string("protocol/ALICE/FROM/BOB/ECDHE/CHECKER CORRECT/CHECK.SIG"),
+
+	string("protocol/ALICE/MESSAGE/MESSAGE.TXT"),
+	string("protocol/ALICE/MESSAGE/EncMESSAGE.TXT"),
+	string("protocol/ALICE/MESSAGE/R_DIGITALSIGN.TXT"),
+	string("protocol/ALICE/MESSAGE/S_DIGITALSIGN.TXT"),
+	string("protocol/ALICE/MESSAGE/X_KEYCHECK_DIGITALSIGN.TXT"),
+	string("protocol/ALICE/MESSAGE/Y_KEYCHECK_DIGITALSIGN.TXT"),
+	string("protocol/ALICE/MESSAGE/ANSWER.TXT"),
+
+	string("protocol/ALICE/FROM/BOB/MESSAGE/EncMESSAGE.TXT"),
+	string("protocol/ALICE/FROM/BOB/MESSAGE/MESSAGE.TXT"),
+	string("protocol/ALICE/FROM/BOB/MESSAGE/R_DIGITALSIGN.TXT"),
+	string("protocol/ALICE/FROM/BOB/MESSAGE/S_DIGITALSIGN.TXT"),
+	string("protocol/ALICE/FROM/BOB/MESSAGE/X_KEYCHECK_DIGITALSIGN.TXT"),
+	string("protocol/ALICE/FROM/BOB/MESSAGE/Y_KEYCHECK_DIGITALSIGN.TXT"),
+	string("protocol/ALICE/FROM/BOB/MESSAGE/ANSWER.TXT")
 ) { };
 
 User_Alice::~User_Alice() { };
@@ -45,7 +61,23 @@ User_Bob::User_Bob() : IUser(
 
 	string("protocol/BOB/ECDHE/SESSION KEY/SECRET.KEY"),
 	string("protocol/BOB/ECDHE/CHECKER CORRECT/CHECK.SIG"),
-	string("protocol/BOB/FROM/ALICE/ECDHE/CHECKER CORRECT/CHECK.SIG")
+	string("protocol/BOB/FROM/ALICE/ECDHE/CHECKER CORRECT/CHECK.SIG"),
+
+	string("protocol/BOB/MESSAGE/MESSAGE.TXT"),
+	string("protocol/BOB/MESSAGE/EncMESSAGE.TXT"),
+	string("protocol/BOB/MESSAGE/R_DIGITALSIGN.TXT"),
+	string("protocol/BOB/MESSAGE/S_DIGITALSIGN.TXT"),
+	string("protocol/BOB/MESSAGE/X_KEYCHECK_DIGITALSIGN.TXT"),
+	string("protocol/BOB/MESSAGE/Y_KEYCHECK_DIGITALSIGN.TXT"),
+	string("protocol/BOB/MESSAGE/ANSWER.TXT"),
+
+	string("protocol/BOB/FROM/ALICE/MESSAGE/EncMESSAGE.TXT"),
+	string("protocol/BOB/FROM/ALICE/MESSAGE/MESSAGE.TXT"),
+	string("protocol/BOB/FROM/ALICE/MESSAGE/R_DIGITALSIGN.TXT"),
+	string("protocol/BOB/FROM/ALICE/MESSAGE/S_DIGITALSIGN.TXT"),
+	string("protocol/BOB/FROM/ALICE/MESSAGE/X_KEYCHECK_DIGITALSIGN.TXT"),
+	string("protocol/BOB/FROM/ALICE/MESSAGE/Y_KEYCHECK_DIGITALSIGN.TXT"),
+	string("protocol/BOB/FROM/ALICE/MESSAGE/ANSWER.TXT")
 ) { };
 
 User_Bob::~User_Bob() { };
@@ -318,6 +350,7 @@ void IUser::Send_CheckCorrectSessionKey(IUser& User){
 
 	//AES256 with Session Key Encryption 'CheckCorrectSessionKeyHash' 
 	AES_256 AES;
+	AES.SetEncryptionMode(1);
 	
 	//Read Session Key
 	SessionKey = new vector<uint8_t>;
@@ -368,6 +401,8 @@ bool IUser::checkCorrectSessionKey(){
 
 	//Decryption Friend EncryptionCheckCorrectSessionKeyHash
 	AES_256 AES;
+	AES.SetEncryptionMode(1);
+
 	auto DecryptionFriendCheckCorrectSessionKeyHash = AES.Decrypt(EncryptionFriendCheckCorrectSessionKeyHash, SessionKey);
 
 	delete SessionKey;
@@ -382,6 +417,286 @@ bool IUser::checkCorrectSessionKey(){
 	//Else => return false
 	for (uint32_t i = 0; i < CheckCorrectSessionKeyHash->size(); i++) {
 		if ((*CheckCorrectSessionKeyHash)[i] == (*DecryptionFriendCheckCorrectSessionKeyHash)[i]) { continue; }
+		else { return false; }
+	}
+
+	return true;
+}
+
+void IUser::CreateMessage(){
+	//Generate Pseudo Random Number
+	CSPRNG generatorPRN;
+	auto PRN = generatorPRN.GeneratePRN(1024);
+	//Get Secret Key for Elliptic Curve
+	bigint SecretKeyDS;
+	SecretKeyDS.FromString(hexStr(PRN), 16);
+
+	//CreateKeyCheckDigitalSign
+	pair<string, string> KeyCheckDigitalSign = ECDSA.CreateKeyCheckDigitalSign(SecretKeyDS.ToString());
+
+	//Write X_KeyCheckDigitalSign
+	fstream FileOutput;
+	FileOutput.open(strUser_X_KeyCheckDigitalSignMessagePath, ios_base::out | ios_base::binary);
+	for (uint32_t i = 0; i < KeyCheckDigitalSign.first.size(); i++) FileOutput.put(KeyCheckDigitalSign.first[i]);
+	FileOutput.close();
+
+	//Write Y_KeyCheckDigitalSign
+	FileOutput.open(strUser_Y_KeyCheckDigitalSignMessagePath, ios_base::out | ios_base::binary);
+	for (uint32_t i = 0; i < KeyCheckDigitalSign.second.size(); i++) FileOutput.put(KeyCheckDigitalSign.second[i]);
+	FileOutput.close();
+
+	//Read Message
+	auto arrbyMessage = new vector<uint8_t>;
+	fstream FileInput;
+	FileInput.open(strUser_MessagePath, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { arrbyMessage->push_back(FileInput.get()); }
+	FileInput.close();
+	
+	//CreateDigitalSign
+	pair<string, string> DigitalSign = ECDSA.CreateDigitalSign(SecretKeyDS.ToString(), string(arrbyMessage->begin(), arrbyMessage->end()));
+
+	//Write R
+	FileOutput.open(strUser_Parametr_R_DigitalSignMessagePath, ios_base::out | ios_base::binary);
+	for (uint32_t i = 0; i < DigitalSign.first.size(); i++) FileOutput.put(DigitalSign.first[i]);
+	FileOutput.close();
+
+	//Write S
+	FileOutput.open(strUser_Parametr_S_DigitalSignMessagePath, ios_base::out | ios_base::binary);
+	for (uint32_t i = 0; i < DigitalSign.second.size(); i++) FileOutput.put(DigitalSign.second[i]);
+	FileOutput.close();
+
+	//AES with CTR mode
+	AES_256 AES;
+	AES.SetEncryptionMode(1);
+
+	//Read Session Key
+	SessionKey = new vector<uint8_t>;
+	FileInput.open(strECDHE_UserSessionKey, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { SessionKey->push_back(FileInput.get()); }
+	FileInput.close();
+
+	//Save Message Size
+	union FormatedWriteMessageSize {
+		uint64_t qwMessageSize;
+		uint8_t byArrMessageSize[sizeof(uint64_t)];
+	};
+	FormatedWriteMessageSize qwFormat;
+
+	qwFormat.qwMessageSize = arrbyMessage->size();
+
+	//Encryption Message
+	auto EncryptionMessage = AES.Encrypt(arrbyMessage, SessionKey);
+
+	//Write EncryptionMessage
+	FileOutput.open(strUser_EncryptionMessagePath, ios_base::out | ios_base::binary);
+	
+	//Write MessageSize
+	for (unsigned char i : qwFormat.byArrMessageSize) { FileOutput << i; }
+	//Write Message
+	for (uint32_t i = 0; i < EncryptionMessage->size(); i++) FileOutput.put((*EncryptionMessage)[i]);
+	FileOutput.close();
+
+	delete PRN;
+	delete arrbyMessage;
+	delete SessionKey;
+	delete EncryptionMessage;
+}
+
+void IUser::SendMessage(IUser& User){
+	fstream FileInput;
+	fstream FileOutput;
+
+	//Send X_KeyCheckDigitalSign to User
+	FileInput.open(strUser_X_KeyCheckDigitalSignMessagePath, ios_base::in | ios_base::binary);
+	FileOutput.open(User.strFriend_X_KeyCheckDigitalSignMessagePath, ios_base::out | ios_base::binary);
+
+	while (FileInput.peek() != -1) { FileOutput.put(FileInput.get()); }
+
+	FileInput.close();
+	FileOutput.close();
+
+	//Send Y_KeyCheckDigitalSign to User
+	FileInput.open(strUser_Y_KeyCheckDigitalSignMessagePath, ios_base::in | ios_base::binary);
+	FileOutput.open(User.strFriend_Y_KeyCheckDigitalSignMessagePath, ios_base::out | ios_base::binary);
+
+	while (FileInput.peek() != -1) { FileOutput.put(FileInput.get()); }
+
+	FileInput.close();
+	FileOutput.close();
+
+	//Send R to User
+	FileInput.open(strUser_Parametr_R_DigitalSignMessagePath, ios_base::in | ios_base::binary);
+	FileOutput.open(User.strFriend_Parametr_R_DigitalSignMessagePath, ios_base::out | ios_base::binary);
+
+	while (FileInput.peek() != -1) { FileOutput.put(FileInput.get()); }
+
+	FileInput.close();
+	FileOutput.close();
+
+	//Send S to User
+	FileInput.open(strUser_Parametr_S_DigitalSignMessagePath, ios_base::in | ios_base::binary);
+	FileOutput.open(User.strFriend_Parametr_S_DigitalSignMessagePath, ios_base::out | ios_base::binary);
+
+	while (FileInput.peek() != -1) { FileOutput.put(FileInput.get()); }
+
+	FileInput.close();
+	FileOutput.close();
+
+	//Send EncryptionMessage to User
+	FileInput.open(strUser_EncryptionMessagePath, ios_base::in | ios_base::binary);
+	FileOutput.open(User.strFriend_EncryptionMessagePath, ios_base::out | ios_base::binary);
+
+	while (FileInput.peek() != -1) { FileOutput.put(FileInput.get()); }
+
+	FileInput.close();
+	FileOutput.close();
+}
+
+void IUser::CheckMessage_CreateAnswer(){
+	//AES with CTR mode
+	AES_256 AES;
+	AES.SetEncryptionMode(1);
+
+	//Read Session Key
+	fstream FileInput;
+	SessionKey = new vector<uint8_t>;
+	FileInput.open(strECDHE_UserSessionKey, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { SessionKey->push_back(FileInput.get()); }
+	FileInput.close();
+
+	//Read EncryptionMessage
+	auto EncryptionMessage = new vector<uint8_t>;
+	FileInput.open(strFriend_EncryptionMessagePath, ios_base::in | ios_base::binary);
+	
+	//Read Message Size
+	union FormatedWriteMessageSize {
+		uint64_t qwMessageSize;
+		uint8_t byArrMessageSize[sizeof(uint64_t)];
+	};
+	FormatedWriteMessageSize qwFormat;
+	
+	for (unsigned char & i : qwFormat.byArrMessageSize) { i = FileInput.get(); }		
+	uint64_t MessageSize = qwFormat.qwMessageSize;
+	//Read Message
+	while (FileInput.peek() != -1) { EncryptionMessage->push_back(FileInput.get()); }
+	FileInput.close();
+
+	//Decryption Message
+	auto DecryptionMessage = AES.Decrypt(EncryptionMessage, SessionKey);
+	string Message(DecryptionMessage->begin(), DecryptionMessage->begin() + MessageSize);
+	
+	//Write Message
+	fstream FileOutput;
+	FileOutput.open(strFriend_DecryptionMessagePath, ios_base::out | ios_base::binary);
+	for (uint32_t i = 0; i < Message.size(); i++) FileOutput.put(Message[i]);
+	FileOutput.close();
+	
+	//Read X_KeyCheckDigitalSign
+	string X_KeyCheckDigitalSign;
+	FileInput.open(strFriend_X_KeyCheckDigitalSignMessagePath, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { X_KeyCheckDigitalSign.push_back(FileInput.get()); }
+	FileInput.close();
+
+	//Read Y_KeyCheckDigitalSign
+	string Y_KeyCheckDigitalSign;
+	FileInput.open(strFriend_Y_KeyCheckDigitalSignMessagePath, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { Y_KeyCheckDigitalSign.push_back(FileInput.get()); }
+	FileInput.close();
+	
+	//Create KeyCheckDigitalSign
+	pair<string, string> KeyCheckDigitalSign(X_KeyCheckDigitalSign, Y_KeyCheckDigitalSign);
+
+	//Read R
+	string R;
+	FileInput.open(strFriend_Parametr_R_DigitalSignMessagePath, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { R.push_back(FileInput.get()); }
+	FileInput.close();
+
+	//Read S
+	string S;
+	FileInput.open(strFriend_Parametr_S_DigitalSignMessagePath, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { S.push_back(FileInput.get()); }
+	FileInput.close();
+
+	//CreateDigitalSign
+	pair<string, string> DigitalSign(R, S);
+
+	//CheckDigitalSign
+	bool result = ECDSA.CheckDigitalSign(DigitalSign, Message, KeyCheckDigitalSign);
+
+	vector<uint8_t>* Answer;
+	if (result) {
+		//Get Message Hash
+		AlgorithmSHA512::SHA512 HashFunction;
+		Answer = AES.Encrypt(HashFunction.GetHash(&vector<uint8_t>(Message.begin(), Message.end())), SessionKey);
+	}
+	else {
+		//Generate Pseudo Random Number
+		CSPRNG generatorPRN;
+		Answer = generatorPRN.GeneratePRN(80);
+	}
+
+	//Write Answer
+	FileOutput.open(strUser_AnswerPath, ios_base::out | ios_base::binary);
+	for (uint32_t i = 0; i < Answer->size(); i++) FileOutput.put((*Answer)[i]);
+	FileOutput.close();
+
+	delete SessionKey;
+	delete EncryptionMessage;
+	delete DecryptionMessage;
+	delete Answer;
+}
+
+void IUser::SendAnswer(IUser& User){
+	fstream FileInput;
+	fstream FileOutput;
+
+	//Send Answer to User
+	FileInput.open(strUser_AnswerPath, ios_base::in | ios_base::binary);
+	FileOutput.open(User.strFriend_AnswerPath, ios_base::out | ios_base::binary);
+
+	while (FileInput.peek() != -1) { FileOutput.put(FileInput.get()); }
+
+	FileInput.close();
+	FileOutput.close();
+}
+
+bool IUser::CheckAnswer(){
+	//AES with CTR mode
+	AES_256 AES;
+	AES.SetEncryptionMode(1);
+
+	//Read Session Key
+	fstream FileInput;
+	SessionKey = new vector<uint8_t>;
+	FileInput.open(strECDHE_UserSessionKey, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { SessionKey->push_back(FileInput.get()); }
+	FileInput.close();
+
+	//Read Answer
+	auto Answer = new vector<uint8_t>;
+	FileInput.open(strFriend_AnswerPath, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { Answer->push_back(FileInput.get()); }
+	FileInput.close();
+
+	//Decrypt Answer
+	auto AnswerMessageHash = AES.Decrypt(Answer, SessionKey);
+
+	//Read Message
+	auto arrbyMessage = new vector<uint8_t>;
+	FileInput.open(strUser_MessagePath, ios_base::in | ios_base::binary);
+	while (FileInput.peek() != -1) { arrbyMessage->push_back(FileInput.get()); }
+	FileInput.close();
+
+	//Get MessageHash
+	AlgorithmSHA512::SHA512 HashFunction;
+	auto MessageHash = HashFunction.GetHash(&vector<uint8_t>(arrbyMessage->begin(), arrbyMessage->end()));
+
+	//Check, that MessageHash == AnswerMessageHash
+	//If equal => return true
+	//Else => return false
+	for (uint32_t i = 0; i < MessageHash->size(); i++) {
+		if ((*MessageHash)[i] == (*AnswerMessageHash)[i]) { continue; }
 		else { return false; }
 	}
 
@@ -415,7 +730,23 @@ IUser::IUser(
 
 	string& _strECDHE_UserSessionKey,
 	string& _strECDHE_UserCheckCorrectSessionKey,
-	string& _strECDHE_FriendCheckCorrectSessionKey
+	string& _strECDHE_FriendCheckCorrectSessionKey,
+
+	string& _strUser_MessagePath,
+	string& _strUser_EncryptionMessagePath,
+	string& _strUser_Parametr_R_DigitalSignMessagePath,
+	string& _strUser_Parametr_S_DigitalSignMessagePath,
+	string& _strUser_X_KeyCheckDigitalSignMessagePath,
+	string& _strUser_Y_KeyCheckDigitalSignMessagePath,
+	string& _strUser_AnswerPath,
+
+	string& _strFriend_EncryptionMessagePath,
+	string& _strFriend_DecryptionMessagePath,
+	string& _strFriend_Parametr_R_DigitalSignMessagePath,
+	string& _strFriend_Parametr_S_DigitalSignMessagePath,
+	string& _strFriend_X_KeyCheckDigitalSignMessagePath,
+	string& _strFriend_Y_KeyCheckDigitalSignMessagePath,
+	string& _strFriend_AnswerPath
 ) {
 	strRSA_Path_UserPublicKey = _strRSA_Path_UserPublicKey;
 	strRSA_Path_UserPrivateKey = _strRSA_Path_UserPrivateKey;
@@ -435,6 +766,22 @@ IUser::IUser(
 	strECDHE_UserSessionKey = _strECDHE_UserSessionKey;
 	strECDHE_UserCheckCorrectSessionKey = _strECDHE_UserCheckCorrectSessionKey;
 	strECDHE_FriendCheckCorrectSessionKey = _strECDHE_FriendCheckCorrectSessionKey;
+
+	strUser_MessagePath = _strUser_MessagePath;
+	strUser_EncryptionMessagePath = _strUser_EncryptionMessagePath;
+	strUser_Parametr_R_DigitalSignMessagePath = _strUser_Parametr_R_DigitalSignMessagePath;
+	strUser_Parametr_S_DigitalSignMessagePath = _strUser_Parametr_S_DigitalSignMessagePath;
+	strUser_X_KeyCheckDigitalSignMessagePath = _strUser_X_KeyCheckDigitalSignMessagePath;
+	strUser_Y_KeyCheckDigitalSignMessagePath = _strUser_Y_KeyCheckDigitalSignMessagePath;
+	strUser_AnswerPath = _strUser_AnswerPath;
+
+	strFriend_EncryptionMessagePath = _strFriend_EncryptionMessagePath;
+	strFriend_DecryptionMessagePath = _strFriend_DecryptionMessagePath;
+	strFriend_Parametr_R_DigitalSignMessagePath = _strFriend_Parametr_R_DigitalSignMessagePath;
+	strFriend_Parametr_S_DigitalSignMessagePath = _strFriend_Parametr_S_DigitalSignMessagePath;
+	strFriend_X_KeyCheckDigitalSignMessagePath = _strFriend_X_KeyCheckDigitalSignMessagePath;
+	strFriend_Y_KeyCheckDigitalSignMessagePath = _strFriend_Y_KeyCheckDigitalSignMessagePath;
+	strFriend_AnswerPath = _strFriend_AnswerPath;
 };
 
 IUser::~IUser() { };
