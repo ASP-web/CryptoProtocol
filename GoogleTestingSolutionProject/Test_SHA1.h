@@ -3,7 +3,6 @@
 
 #include "../SHA1_Hash/SHA1.h"
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 #include <string>
 
 /*Unit Test SHA1 Hash Algorithm*/

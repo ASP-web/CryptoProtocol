@@ -3,7 +3,6 @@
 
 #include "../SHA512_Hash/SHA512.h"
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 #include <string>
 #include <chrono>
 

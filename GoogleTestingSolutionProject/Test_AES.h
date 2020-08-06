@@ -21,7 +21,7 @@ TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES128_ECB) {
 
 	AES_128 aes;
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
-	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+	vector<uint8_t>* PT = new vector<uint8_t>(104857600, 'a');
 
 	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
@@ -48,7 +48,7 @@ TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES192_ECB) {
 
 	AES_192 aes;
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
-	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+	vector<uint8_t>* PT = new vector<uint8_t>(104857600, 'a');
 
 	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
@@ -75,7 +75,7 @@ TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES256_ECB) {
 
 	AES_256 aes;
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f };
-	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+	vector<uint8_t>* PT = new vector<uint8_t>(104857600, 'a');
 
 	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
@@ -104,7 +104,7 @@ TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES128_CTR) {
 	AES_128 aes;
 	aes.SetEncryptionMode(1);
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
-	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+	vector<uint8_t>* PT = new vector<uint8_t>(104857600, 'a');
 
 	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
@@ -132,7 +132,7 @@ TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES192_CTR) {
 	AES_192 aes;
 	aes.SetEncryptionMode(1);
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
-	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+	vector<uint8_t>* PT = new vector<uint8_t>(104857600, 'a');
 
 	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
@@ -160,7 +160,7 @@ TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES256_CTR) {
 	AES_256 aes;
 	aes.SetEncryptionMode(1);
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f };
-	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+	vector<uint8_t>* PT = new vector<uint8_t>(104857600, 'a');
 
 	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
@@ -189,7 +189,7 @@ TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES128_OFB) {
 	AES_128 aes;
 	aes.SetEncryptionMode(2);
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f };
-	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+	vector<uint8_t>* PT = new vector<uint8_t>(104857600, 'a');
 
 	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
@@ -217,7 +217,7 @@ TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES192_OFB) {
 	AES_192 aes;
 	aes.SetEncryptionMode(2);
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17 };
-	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+	vector<uint8_t>* PT = new vector<uint8_t>(104857600, 'a');
 
 	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);
@@ -245,7 +245,7 @@ TEST_F(TestAES, CorrectWorkEncryptAndDecryptAES256_OFB) {
 	AES_256 aes;
 	aes.SetEncryptionMode(2);
 	vector<uint8_t>* key = new vector<uint8_t>{ 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f };
-	vector<uint8_t>* PT = new vector<uint8_t>(10485760, 'a');
+	vector<uint8_t>* PT = new vector<uint8_t>(104857600, 'a');
 
 	start = myclock::now();
 	vector<uint8_t>* calcCT = aes.Encrypt(PT, key);

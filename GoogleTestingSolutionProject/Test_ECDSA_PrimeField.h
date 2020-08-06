@@ -4,7 +4,6 @@
 #include "../ECDSA/ECDSA_PrimeField.h"
 #include "../CSPRNG/CSPRNG.h"
 #include "gtest/gtest.h"
-#include "gmock/gmock.h"
 #include <string>
 #include <iostream>
 

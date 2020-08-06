@@ -22,32 +22,32 @@
     <ProjectGuid>{F3F4BAAE-B45D-4A67-8B47-BDFF2A7E22EE}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GoogleTestingSolutionProject</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -169,11 +169,14 @@
     <ClInclude Include="Test_ECDSA.h" />
     <ClInclude Include="Test_ECDSA_PrimeField.h" />
     <ClInclude Include="Test_ECPoint.h" />
+    <ClInclude Include="Test_Kuznechik.h" />
     <ClInclude Include="Test_Rijndael.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Test_RSA.h" />
     <ClInclude Include="Test_SHA1.h" />
     <ClInclude Include="Test_SHA512.h" />
+    <ClInclude Include="Test_Streebog.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -189,11 +192,17 @@
     <ProjectReference Include="..\ECDSA\ECDSA.vcxproj">
       <Project>{f9165079-ae8a-4e97-afe9-476e26e11556}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Kuznechik\Kuznechik.vcxproj">
+      <Project>{682101e5-adaa-4d48-bc51-6b351f58766f}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\SHA1_Hash\SHA1_Hash.vcxproj">
       <Project>{09fd47df-bf0c-40ee-83e6-28362e4623cc}</Project>
     </ProjectReference>
     <ProjectReference Include="..\SHA512_Hash\SHA512_Hash.vcxproj">
       <Project>{3b8e65d4-5466-42a3-91f9-668bf07aead4}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Streebog\Streebog.vcxproj">
+      <Project>{67c6d3f9-77c2-4d16-917f-ed851f1c3eab}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
